@@ -4,18 +4,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
-public class AppLogic {
+public class AppLogic {                                                                             // Erstellt eine Matrix mit allen Möglichen Personen und Mattratzen Kombinationen. Lässt Regeln drüberlaufen die Punkte vergeben. Die BEste Kombination aus PErsonen und Matratzen mit den meisten Punkten wird ausgewählt
     AppState appState;
 
         public void runAssignment(AppState appState) {
-            Cell[][] scoringMatrix = createScoringMatrix(appState.building, appState.persons);
-            scoringMatrix = makeMatrixSquared(scoringMatrix);
+            Cell[][] scoringMatrix = createScoringMatrix(appState.building, appState.persons);      // Erstellt eine ScoringMatrix mit einem cell Objekt was Person, Matratze und Punktzahl enthalält
+            scoringMatrix = makeMatrixSquared(scoringMatrix);                                       // Da es mehr oder weniger Matratzen als Personen geben kann muss die Matrix Quadratisch gemacht werden (Braucht der Hungarian)
             scoringMatrix = runAllRules(scoringMatrix, appState.rules);
-            int[][] justScoreMatrix = createOnlyScoreMatrix(scoringMatrix);
+            int[][] justScoreMatrix = createOnlyScoreMatrix(scoringMatrix);                         // Erstellt eine Int Matrix die nur die Punktzahl von den cell Elementen enthält. Muss umgewandelt werden da der Hungarian Algorithmus nur eine einfach Int Matrix nimmt
             int[] result = HungarianSimple.assign(justScoreMatrix);
-            assignPoepletoMattresses(result, scoringMatrix);
+            assignPoepletoMattresses(result, scoringMatrix);                                        
     
-            // Testausdrücke
+            // Testprints
             System.out.println("scoringMatrix:");
             for (Cell[] row : scoringMatrix) {
                 System.out.println(Arrays.toString(row));
@@ -30,7 +30,7 @@ public class AppLogic {
             System.out.println(appState.building);
         }
     
-        Cell[][] createScoringMatrix(Building building, List<Person> personsList) {
+        Cell[][] createScoringMatrix(Building building, List<Person> personsList) {             // Erstellt eine ScoringMatrix mit einem cell Objekt was Person, Matratze und Punktzahl enthalält                                  
             Cell[][] scoringMatrix = new Cell[personsList.size()][building.allMatList.size()];
             for (int i = 0; i < personsList.size(); i++) {
                 for (int j = 0; j < building.allMatList.size(); j++) {
@@ -44,12 +44,12 @@ public class AppLogic {
             return scoringMatrix;
         }
     
-        Cell[][] makeMatrixSquared(Cell[][] unsquaredMatrix) {
+        Cell[][] makeMatrixSquared(Cell[][] unsquaredMatrix) {                                  
             int zeilen = unsquaredMatrix.length;
             int spalten = unsquaredMatrix[0].length;
-            int size = Math.max(zeilen, spalten);
-            Cell[][] square = new Cell[size][size];
-            for (int i = 0; i < zeilen; i++) {
+            int size = Math.max(zeilen, spalten);                                               // Schaut sich an wie viel Zeilen und Spalten die Matrix hat, dann das was größer 
+            Cell[][] square = new Cell[size][size];                                             // Neue Matrix mit der Größe
+            for (int i = 0; i < zeilen; i++) {                                                  // Jetzt werden nur die Zellen kopiert wo auch was in der Unquadratischen Matrix ist. Die anderen sind null;
                 for (int j = 0; j < spalten; j++) {
                     square[i][j] = unsquaredMatrix[i][j];
                 }
@@ -57,23 +57,23 @@ public class AppLogic {
             return square;
         }
     
-        Cell[][] runAllRules(Cell[][] scoringMatrix, List<Rule> allRules) {
+        Cell[][] runAllRules(Cell[][] scoringMatrix, List<Rule> allRules) {                         
             for (int i = 0; i < scoringMatrix.length; i++) {
                 for (int j = 0; j < scoringMatrix.length; j++) {
-                    if (scoringMatrix[i][j] == null) continue;
+                    if (scoringMatrix[i][j] == null) continue;                                  // Wenn die Matrix empty ist weiter ansonsten runRulesList
                     runRulesList(scoringMatrix[i][j], allRules);
                 }
             }
             return scoringMatrix;
         }
     
-        void runRulesList(Cell cell, List<Rule> allRules) {
+        void runRulesList(Cell cell, List<Rule> allRules) {                                     // Lässt alle Regeln über diese Matrarzen und PErsonen Kombination laufen und addiert die Punkte
             for (Rule rule : allRules) {
                 cell.score += rule.execute(cell);
             }
         }
     
-        int[][] createOnlyScoreMatrix(Cell[][] scoringMatrix) {
+        int[][] createOnlyScoreMatrix(Cell[][] scoringMatrix) {                                 // Erstellt eine Int Matrix die nur die Punktzahl von den cell Elementen enthält
             int[][] justScoreMatrix = new int[scoringMatrix.length][scoringMatrix.length];
             for (int i = 0; i < scoringMatrix.length; i++) {
                 for (int j = 0; j < scoringMatrix.length; j++) {
@@ -84,11 +84,11 @@ public class AppLogic {
             return justScoreMatrix;
         }
     
-        void assignPoepletoMattresses(int[] result, Cell[][] scoringMatrix) {
+        void assignPoepletoMattresses(int[] result, Cell[][] scoringMatrix) {                   // Hier ist irgendwie ein Fehler
             for (int i = 0; i < scoringMatrix.length; i++) {
                 for (int j = 0; j < scoringMatrix.length; j++) {
                     if (scoringMatrix[i][j] == null) continue;
-                    if (result[i] == j) scoringMatrix[i][j].assignPerToMattress();
+                    if (result[i] == j) scoringMatrix[i][j].assignPerToMattress();              // Setzt die Matratzen im Gebäude auf die richtigen Personen
                 }
             }
         }

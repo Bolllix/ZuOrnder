@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Building {
-    List<Mattress> allMatList;
+        List<Mattress> allMatList;
         List<Room> roomsList;
     
         List<Mattress> createBigMatList() { // Kreiert eine MatratzenListe aus der Liste der Räume

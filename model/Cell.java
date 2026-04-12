@@ -1,4 +1,5 @@
 package model;
+// Wird für die Scoring Matrix benötigt
 public class Cell {
     Person person;
     Mattress mattress;

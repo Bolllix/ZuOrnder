@@ -9,7 +9,7 @@ public class AppState {
     List<Person> persons;
     List<Room> rooms;
     List<Rule> rules;
-    Building building;
+    static Building building;
 
     public AppState(List<Person> persons, List<Room> rooms, List<Rule> rules, Building building) {
         this.persons = persons;
@@ -32,5 +32,10 @@ public class AppState {
 
     public Building getBuilding() {
         return building;
+    }
+
+    public String toString() {
+
+        return "";
     }
 }
